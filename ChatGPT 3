@@ -1,0 +1,85 @@
+FitCoach – Self-Coaching Fitness PWA (React + Vite + TailwindCSS) All project files (source code, assets, configuration, and sample data) are provided in the attached .zip archive. Below is an overview of the project structure and key features, followed by setup and deployment instructions.
+Project Overview
+Architecture: Modular React (Vite) project with TailwindCSS styling. The app is mobile-responsive, supports offline use via a service worker (PWA), and offers light/dark theme toggling.
+Feature Modules: Includes pages for Dashboard, Training Program Builder, Nutrition Tracker, Supplement Management, Health Metrics, and Settings/About.
+Data Persistence: Uses browser localStorage for all data, so it works fully offline. Sample data loads on first run (with a reset option to restore it).
+Smart Features: Provides .fitcoach data export/import (JSON format), simple rule-based coaching tips (e.g., plateau detection), and explanatory tooltips for clarity.
+Branding: A clean, scientific design with a custom dumbbell logo and Meshal Alawein’s name in the footer and About section.
+Key Features
+Dashboard: Shows weekly workout count vs. goal, today’s and weekly average calories, goal completion status, and automatic tips. For example, if your weight plateaus (little change over recent entries) or if you miss workouts, the app highlights it and offers guidance.
+Training: Build workouts by naming routines and adding exercises (sets & reps). Track workouts by logging sessions (records the date of completion). You can edit exercises or delete workouts. The last completion date for each program is displayed for quick reference.
+Nutrition: Log daily meals with description, calories, protein, carbs, and fat. View a table of entries per day with totals. A weekly summary shows total and average daily calories for the last 7 days to help monitor your diet.
+Supplements: Track supplements or PEDs with name, dosage, and timing notes (e.g., Creatine – 5g – daily post-workout). You can review all entries at a glance and remove any item if needed.
+Health Metrics: Define custom metrics (e.g., Weight in kg, Resting Heart Rate in bpm) and add dated entries. This helps you record progress in various health indicators over time.
+Settings & About: Toggle light/dark theme. Export Data to a .fitcoach (JSON) file for backup or transfer. Import Data from a file (overwrites current data after confirmation). Reset Data to clear current state and reload the initial sample data. The About section credits Meshal Alawein and explains that data is stored locally (so your info stays private, and the app works offline).
+Tech Stack
+React + Vite: Fast development server and optimized production build.
+TailwindCSS: Utility-first CSS for a cohesive, responsive UI.
+React Context API: Global state management for fitness data and theme preference (no external state libraries needed).
+TypeScript: Ensures type-safe code for reliability and easier maintenance.
+PWA: Service worker caching and a Web App Manifest enable offline use and installability (add to home screen with a custom icon).
+Installation & Development
+Unzip the Codebase: Download and extract the attached FitCoachApp.zip.
+Install Dependencies: Run npm install (this will install React, React-DOM, React Router, TailwindCSS, Vite, etc.).
+Run in Development: Use npm run dev to start the Vite dev server. By default it will be at http://localhost:5173/. You can view the app in your browser and edit code – it will live-reload changes.
+Build for Production: Use npm run build. This creates a dist/ folder with the static files.
+Preview Production Build: Optionally, run npm run preview to test the production build locally.
+PWA Features (Offline & Installable)
+This app is a Progressive Web App. It can work offline and be installed on mobile or desktop:
+Service Worker: The service worker script (public/sw.js) caches key assets and handles network requests. It uses a “network-first” strategy with a fallback to cache. This means it will try to fetch fresh content, but if the network is unavailable (offline), it will serve the cached version. On the first visit, it caches the app shell (HTML, CSS, JS, manifest, icons) for offline use.
+Web App Manifest: The public/manifest.json defines the PWA metadata – name, short name, start URL ("/"), display mode ("standalone"), theme colors, and icons. It includes at least a 192×192 and a 512×512 PNG icon as required for Chrome and other platforms.
+Installable: When you visit the deployed app, you can use “Add to Home Screen” on mobile or the install button in desktop Chrome/Edge. Once installed, it launches in full-screen mode without the browser UI (thanks to "display": "standalone" in the manifest).
+Offline Data Storage: All user-entered data is stored via localStorage in the browser. This makes it instantly available offline across sessions. (We chose localStorage for simplicity; it stores strings and is synchronous, which is fine for a moderate amount of data. For larger scale data, one could switch to IndexedDB for async storage​
+web.dev
+.)
+Project Structure
+plaintext
+Copy
+Edit
+FitCoachApp/
+├── index.html               # Root HTML file
+├── public/
+│   ├── manifest.json        # PWA manifest (app metadata and icons)
+│   ├── sw.js                # Service Worker for offline caching
+│   ├── logo.svg             # App logo (used in navbar, scientific dumbbell icon)
+│   └── icons/
+│       ├── icon-192.png     # 192x192 app icon (PWA requirement)
+│       └── icon-512.png     # 512x512 app icon (PWA requirement)
+├── src/
+│   ├── context/
+│   │   ├── DataContext.tsx  # Holds global app state (workouts, nutrition, etc.) and actions
+│   │   └── ThemeContext.tsx # Manages theme state (light/dark) and applies .dark class
+│   ├── pages/
+│   │   ├── Dashboard.tsx    # Dashboard overview page
+│   │   ├── Training.tsx     # Training program builder & workout logger
+│   │   ├── Nutrition.tsx    # Nutrition tracking page
+│   │   ├── Supplements.tsx  # Supplement/PED tracking page
+│   │   ├── Metrics.tsx      # Health metrics tracking page
+│   │   └── Settings.tsx     # Settings & About page (theme toggle, import/export data)
+│   ├── components/
+│   │   └── NavBar.tsx       # Top navigation bar (includes mobile menu & theme toggle)
+│   ├── App.tsx              # Main component with routes and layout (NavBar, footer)
+│   ├── main.tsx             # App entry point (ReactDOM render with Context providers)
+│   └── index.css            # Tailwind base styles and custom CSS (e.g., tooltip styles)
+├── package.json             # Project scripts and dependencies
+├── tailwind.config.js       # Tailwind configuration (content paths, dark mode setting)
+├── postcss.config.js        # PostCSS config to use TailwindCSS and Autoprefixer
+├── tsconfig.json            # TypeScript configuration
+├── netlify.toml             # Netlify config (redirects for SPA)
+└── vercel.json              # Vercel config (rewrites for SPA)
+About DataContext: The DataContext initializes with sample data (two workout programs, some nutrition logs including yesterday’s total as an example, a couple of supplements, two metrics with entries, and a few goals). It provides functions to add or update each piece of data, and automatically syncs any changes to localStorage so that they persist. It also provides exportData (to download JSON) and importData (to load JSON, expecting the structure to match). The app’s pages use this context to display and modify data. About ThemeContext: The ThemeContext checks localStorage for a saved theme or the system preference on first load, then applies the appropriate theme. It toggles the dark class on the <html> element and stores the choice in localStorage. The NavBar includes a button (moon/sun icon) to toggle themes, and the Settings page also provides a toggle button with text.
+Running the App (after build)
+If you build and serve the dist folder (or deploy to a static hosting), the PWA will register its service worker and cache files. You can then:
+Install the App: In Chrome/Edge dev tools, you’ll see a plus icon in the URL bar or an install prompt (also under browser menu → “Install FitCoach”). On mobile Safari, use “Add to Home Screen.”
+Use Offline: After the initial load, try disconnecting internet and refreshing – the app should still load (served from cache). All data operations (adding workouts, etc.) work offline because they don’t require a server – everything is local. (Remember to be online at least once so the service worker can cache the files.)
+Export/Import: The export button in Settings will save a file like fitcoach-data.fitcoach (which is actually JSON) to your device. You can import this file in the app on another device or after clearing data, to restore the state. (The .fitcoach extension is just for branding; the content is JSON.)
+Deployment Notes
+The app is ready to deploy on static site hosts or even package as a desktop app:
+Vercel: Uses vercel.json to ensure client-side routing works (all paths rewrite to index.html). Just build and deploy, or connect your repo to Vercel – no special setup beyond that.
+Netlify: netlify.toml does the same for Netlify (SPA redirect rule). On Netlify, set the build command to npm run build and publish directory to dist.
+GitHub Pages: Since GH Pages doesn’t support routers out-of-the-box, you might use a hash-based router (not implemented here) or a custom 404.html as a redirect. Alternatively, deploy via a subpath and adjust BrowserRouter basename. (This is a general SPA deployment concern.)
+Electron: Not included in this project, but if needed, you can create an Electron wrapper. Typically you’d copy the production build into an Electron app and create a window that loads the index.html. The provided code and assets can be integrated into such a setup (ensure to enable Node integration or adjust paths as needed).
+Security & Privacy
+All data is stored locally in the browser; no external servers are involved. This means your personal workout and nutrition data never leaves your device through this app. (If you choose to export a .fitcoach file and share it, that’s up to you.) The app does not require a login or any network requests to function. Because data is in localStorage, clearing browser storage or resetting the app will erase data – so use the Export feature for backup if the data is important. Similarly, switching devices won’t sync data unless you manually export/import, since there’s no cloud sync (by design, to keep it simple and private).
+Attached Code Archive
+Please download the attached FitCoachApp.zip for the full source code and assets. The code is commented for clarity where appropriate, especially in context providers and service worker. The README.md inside the archive contains the same information for offline reference. Enjoy exploring the code and using the app! – Service worker fetch handler: checks cache first, then network, caching new files for offline use. – PWA manifest requires at least 192×192 and 512×512 icons for Chrome and other browsers (ensures installability). – The display property in manifest is set to standalone so the PWA runs like a native app without browser UI. – Data is stored with localStorage. It’s straightforward for stringified JSON, though being synchronous and limited in size, it’s suitable for moderate data volumes. – Tailwind dark mode is toggled by adding/removing a .dark class on the root HTML element, with preference saved in localStorage (or defaulting to the user’s OS preference).
