@@ -1,0 +1,1310 @@
+The REPZ brand uses an orange (#FF5500) and black color scheme with vertical bars in the logo (resembling an activity meter), and positions itself as "Intelligent Physique Coaching" that's "Powered by data. Built for performance.
+
+REPZ Brand Unification Strategy
+1. Repository Consolidation Framework
+Looking at your GitHub repositories, I recommend the following consolidation approach:
+
+Repz Repository Structure: "# REPZ Repository Consolidation Framework
+
+## Primary Repository: repz-app
+*(Consolidated from CoachTrackPro-new, coaching-app-bolt, and coaching-app)*
+
+repz-app/
+├── .github/           # GitHub Actions, PR templates, etc.
+│   └── workflows/     # CI/CD automation
+├── apps/
+│   ├── mobile/        # Mobile client application
+│   │   ├── android/   # Android-specific code
+│   │   ├── ios/       # iOS-specific code
+│   │   └── src/       # Shared React Native code
+│   ├── web/           # Web client application
+│   │   ├── public/    # Static assets
+│   │   └── src/       # React application code
+│   └── admin/         # Admin dashboard (if applicable)
+├── packages/          # Shared libraries and modules
+│   ├── api/           # API client and integrations
+│   ├── ui/            # Design system & UI components
+│   │   ├── assets/    # Brand assets, icons, etc.
+│   │   └── components/# Shared UI components
+│   ├── analytics/     # Analytics and tracking utilities
+│   ├── state/         # State management 
+│   └── models/        # Data models and types
+├── services/          # Backend services
+│   ├── api/           # Main API server
+│   ├── auth/          # Authentication service
+│   └── data/          # Data processing service
+├── docs/              # Documentation
+│   ├── api/           # API documentation
+│   ├── architecture/  # System architecture
+│   └── brand/         # Brand guidelines
+└── tools/             # Development and build tools
+
+
+## Secondary Repository: repz-data
+*(Consolidated from fitness-excel and fitness-app-notes)*
+
+repz-data/
+├── analysis/          # Data analysis scripts and notebooks
+├── models/            # ML models for exercise detection, etc.
+├── datasets/          # Training and testing datasets
+├── transformers/      # Data transformation utilities
+└── docs/              # Documentation and research notes
+
+
+## Documentation Repository: repz-docs
+*(Consolidated from coaching-app-claude and coaching-app-claude-new)*
+
+repz-docs/
+├── brand/             # Brand guidelines and assets
+├── developer/         # Developer documentation
+├── api/               # API reference
+├── user/              # User guides and tutorials
+└── research/          # Fitness methodologies and research
+
+
+## Legacy Repositories (Archive)
+- CoachTrackPro (Archived, redirect to repz-app)
+- coaching-app (Archived, redirect to repz-app)"
+
+Repz Brand Migration Plan: "# REPZ Brand Migration Strategy
+
+## Phase 1: Brand Assets & Style Guide
+
+### 1.1 Logo & Visual Identity
+- Create centralized assets repository in repz-app/packages/ui/assets
+- Implement logo in multiple formats:
+  - Full logo (horizontal and vertical layouts)
+  - App icon (for mobile applications)
+  - Favicon (for web applications)
+  - Monogram (for UI elements with limited space)
+- Include color specifications:
+  - Primary: #FF5500 (Orange)
+  - Secondary: #000000 (Black)
+  - Background: #FFFFFF (White)
+  - Accent colors: Various grays for UI elements
+
+### 1.2 Typography
+- Primary font: Montserrat (Bold for headings, Regular for body text)
+- Secondary font: Inter (for UI elements and data displays)
+- Fallback system fonts for environments with limited font support
+
+### 1.3 Design System
+- Create a component library based on the REPZ brand
+- Implement as a shared package in repz-app/packages/ui/components
+- Include key elements:
+  - Buttons (primary, secondary, tertiary styles)
+  - Form elements (inputs, selects, etc.)
+  - Navigation elements
+  - Cards and containers
+  - Data visualization components (charts, progress indicators)
+  - Activity meters (based on the logo's vertical bar motif)
+
+## Phase 2: Code & API Migration
+
+### 2.1 Component Renaming Strategy
+| Old Pattern | New Pattern | Example |
+|-------------|-------------|---------|
+| CoachTrack* | Repz* | CoachTrackExercise → RepzExercise |
+| CT* | Repz* | CTProgressBar → RepzProgressBar |
+| trackPro* | repz* | trackProUser → repzUser |
+
+### 2.2 Database Updates
+- Create migration scripts for database name changes
+- Update schema where entity names contain old branding
+- Preserve data integrity during migration
+- Implement versioned API to support backward compatibility
+
+### 2.3 API Path Updates
+- Update API endpoint paths to reflect new branding
+- Implement redirects from old paths to maintain backward compatibility
+- Version API to support gradual migration (/api/v1/repz/...)
+
+## Phase 3: Documentation Updates
+
+### 3.1 External Documentation
+- Update all README files across repositories
+- Create new project documentation with REPZ branding
+- Update API reference documentation
+- Create migration guides for developers
+
+### 3.2 Internal Code Documentation
+- Update JSDoc/TSDoc comments with new terminology
+- Update code examples in documentation
+- Revise documentation site with new branding
+
+## Phase 4: Implementation Timeline
+
+### Week 1-2: Preparation
+- Audit existing code for brand references
+- Set up new repositories
+- Create brand assets and design system
+
+### Week 3-4: Core Migration
+- Implement shared UI components
+- Update database schemas
+- Create API compatibility layer
+
+### Week 5-6: Client Applications
+- Update mobile app branding and UI
+- Update web application branding and UI
+- Implement new onboarding flows
+
+### Week 7-8: Testing & Refinement
+- Conduct comprehensive testing
+- Gather feedback from beta users
+- Make final adjustments
+
+### Week 9: Launch
+- Deploy updated applications
+- Redirect old domains/endpoints
+- Announce rebranding to users"
+
+Repz Data Model: "// REPZ Core Data Models
+// These models represent the core entities in the REPZ application
+// and should be used consistently across all repositories.
+
+// USER MODELS
+export interface RepzUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profileImage?: string;
+  dateOfBirth?: Date;
+  height?: number; // in cm
+  weight?: number; // in kg
+  fitnessLevel: 'beginner' | 'intermediate' | 'advanced';
+  goals: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RepzProfile {
+  userId: string;
+  bio?: string;
+  bodyMetrics: RepzBodyMetrics[];
+  preferredUnits: 'metric' | 'imperial';
+  notificationSettings: RepzNotificationSettings;
+  privacySettings: RepzPrivacySettings;
+}
+
+export interface RepzBodyMetrics {
+  date: Date;
+  weight?: number; // in kg
+  bodyFatPercentage?: number;
+  muscleMass?: number; // in kg
+  restingHeartRate?: number; // in bpm
+  notes?: string;
+}
+
+// WORKOUT MODELS
+export interface RepzExercise {
+  id: string;
+  name: string;
+  description?: string;
+  category: 'strength' | 'cardio' | 'flexibility' | 'balance' | 'other';
+  primaryMuscleGroups: MuscleGroup[];
+  secondaryMuscleGroups: MuscleGroup[];
+  equipment?: string[];
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  instructions: string[];
+  media?: {
+    images?: string[];
+    videos?: string[];
+  };
+  createdBy: string; // userId or 'system'
+  isPublic: boolean;
+}
+
+export type MuscleGroup = 
+  | 'chest' 
+  | 'back' 
+  | 'shoulders' 
+  | 'biceps' 
+  | 'triceps' 
+  | 'forearms'
+  | 'quadriceps' 
+  | 'hamstrings' 
+  | 'calves' 
+  | 'glutes' 
+  | 'core' 
+  | 'fullBody';
+
+export interface RepzWorkout {
+  id: string;
+  userId: string;
+  name: string;
+  description?: string;
+  exercises: RepzWorkoutExercise[];
+  estimatedDuration: number; // in minutes
+  difficultyLevel: 'beginner' | 'intermediate' | 'advanced';
+  tags: string[];
+  isPublic: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RepzWorkoutExercise {
+  exerciseId: string;
+  order: number;
+  sets: RepzSet[];
+  restBetweenSets: number; // in seconds
+  notes?: string;
+}
+
+export type RepzSetType = 'warmup' | 'working' | 'dropset' | 'failure' | 'timed';
+
+export interface RepzSet {
+  type: RepzSetType;
+  reps?: number;
+  weight?: number; // in kg
+  distance?: number; // in meters
+  duration?: number; // in seconds
+  resistanceLevel?: number;
+  completed?: boolean;
+}
+
+// TRACKING MODELS
+export interface RepzWorkoutSession {
+  id: string;
+  userId: string;
+  workoutId: string;
+  startTime: Date;
+  endTime?: Date;
+  exercises: RepzCompletedExercise[];
+  notes?: string;
+  rating?: number; // 1-5
+  metrics: {
+    totalVolume?: number; // total weight lifted
+    totalDuration?: number; // in seconds
+    caloriesBurned?: number;
+    heartRateAvg?: number;
+    heartRateMax?: number;
+  };
+}
+
+export interface RepzCompletedExercise {
+  exerciseId: string;
+  order: number;
+  sets: RepzCompletedSet[];
+  notes?: string;
+}
+
+export interface RepzCompletedSet extends RepzSet {
+  completed: boolean;
+  actualReps?: number;
+  actualWeight?: number;
+  actualDuration?: number;
+  actualDistance?: number;
+  rpe?: number; // Rate of Perceived Exertion (1-10)
+}
+
+// PLANNING MODELS
+export interface RepzRoutine {
+  id: string;
+  userId: string;
+  name: string;
+  description?: string;
+  workouts: {
+    workoutId: string;
+    scheduledDays: number[]; // 0 = Sunday, 1 = Monday, etc.
+  }[];
+  startDate?: Date;
+  endDate?: Date;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// PROGRESS MODELS
+export interface RepzProgress {
+  userId: string;
+  exerciseId: string;
+  date: Date;
+  bestSet: {
+    weight?: number;
+    reps?: number;
+    distance?: number;
+    duration?: number;
+  };
+  trend: 'increasing' | 'decreasing' | 'stable';
+  percentChange: number;
+}
+
+// NOTIFICATION MODELS
+export interface RepzNotification {
+  id: string;
+  userId: string;
+  type: 'reminder' | 'achievement' | 'social' | 'system';
+  title: string;
+  message: string;
+  read: boolean;
+  actionUrl?: string;
+  createdAt: Date;
+}
+
+export interface RepzNotificationSettings {
+  workoutReminders: boolean;
+  achievementAlerts: boolean;
+  socialNotifications: boolean;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+}
+
+// SETTINGS MODELS
+export interface RepzPrivacySettings {
+  profileVisibility: 'public' | 'friends' | 'private';
+  workoutVisibility: 'public' | 'friends' | 'private';
+  statisticsVisibility: 'public' | 'friends' | 'private';
+  allowTagging: boolean;
+}"
+
+Repz UI Components: "// REPZ UI Component Library
+// This file defines the core UI components that reflect the REPZ brand identity
+
+import React from 'react';
+import styled from 'styled-components';
+
+// THEME CONSTANTS
+export const REPZ_THEME = {
+  colors: {
+    primary: '#FF5500', // Orange
+    secondary: '#000000', // Black
+    background: '#FFFFFF', // White
+    backgroundDark: '#121212', // Dark background
+    gray100: '#F5F5F5',
+    gray200: '#EEEEEE',
+    gray300: '#DDDDDD',
+    gray400: '#CCCCCC',
+    gray500: '#AAAAAA',
+    gray600: '#888888',
+    gray700: '#666666',
+    gray800: '#444444',
+    gray900: '#222222',
+    success: '#34C759',
+    warning: '#FF9500',
+    error: '#FF3B30',
+    info: '#007AFF',
+  },
+  fonts: {
+    primary: '"Montserrat", sans-serif',
+    secondary: '"Inter", sans-serif',
+    fallback: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  },
+  fontWeights: {
+    regular: 400,
+    medium: 500,
+    semiBold: 600,
+    bold: 700,
+  },
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '32px',
+    xxl: '48px',
+  },
+  borderRadius: {
+    sm: '4px',
+    md: '8px',
+    lg: '16px',
+    pill: '9999px',
+  },
+  shadows: {
+    sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
+    md: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
+  },
+  transitions: {
+    default: 'all 200ms ease',
+    slow: 'all 300ms ease',
+    fast: 'all 100ms ease',
+  },
+};
+
+// LOGO COMPONENTS
+interface LogoProps {
+  variant?: 'default' | 'monogram' | 'horizontal' | 'vertical';
+  size?: 'small' | 'medium' | 'large';
+  color?: 'default' | 'inverse' | 'monochrome';
+}
+
+export const RepzLogo: React.FC<LogoProps> = ({ 
+  variant = 'default', 
+  size = 'medium', 
+  color = 'default' 
+}) => {
+  // This would actually render the SVG logo based on the props
+  // Placeholder implementation for demonstration
+  return (
+    <div className={repz-logo repz-logo--${variant} repz-logo--${size} repz-logo--${color}}>
+      {/* Logo content would go here */}
+      REPZ
+    </div>
+  );
+};
+
+// BUTTON COMPONENTS
+interface ButtonProps {
+  variant?: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'text';
+  size?: 'small' | 'medium' | 'large';
+  fullWidth?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  onClick?: () => void;
+  children: React.ReactNode;
+}
+
+const StyledButton = styled.button<ButtonProps>
+  font-family: ${REPZ_THEME.fonts.primary};
+  font-weight: ${REPZ_THEME.fontWeights.bold};
+  border-radius: ${REPZ_THEME.borderRadius.md};
+  transition: ${REPZ_THEME.transitions.default};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  outline: none;
+  width: ${props => props.fullWidth ? '100%' : 'auto'};
+  
+  /* Size variations */
+  font-size: ${props => {
+    switch (props.size) {
+      case 'small': return '14px';
+      case 'large': return '18px';
+      default: return '16px';
+    }
+  }};
+  
+  padding: ${props => {
+    switch (props.size) {
+      case 'small': return '8px 16px';
+      case 'large': return '16px 32px';
+      default: return '12px 24px';
+    }
+  }};
+  
+  /* Variant styles */
+  background-color: ${props => {
+    switch (props.variant) {
+      case 'primary': return REPZ_THEME.colors.primary;
+      case 'secondary': return REPZ_THEME.colors.secondary;
+      case 'outline': 
+      case 'text': return 'transparent';
+      default: return REPZ_THEME.colors.primary;
+    }
+  }};
+  
+  color: ${props => {
+    switch (props.variant) {
+      case 'primary': 
+      case 'secondary': return REPZ_THEME.colors.background;
+      case 'outline': return props.disabled ? REPZ_THEME.colors.gray500 : REPZ_THEME.colors.primary;
+      case 'text': return props.disabled ? REPZ_THEME.colors.gray500 : REPZ_THEME.colors.primary;
+      default: return REPZ_THEME.colors.background;
+    }
+  }};
+  
+  border: ${props => {
+    return props.variant === 'outline' 
+      ? 2px solid ${props.disabled ? REPZ_THEME.colors.gray500 : REPZ_THEME.colors.primary} 
+      : 'none';
+  }};
+  
+  opacity: ${props => props.disabled ? 0.6 : 1};
+  
+  &:hover {
+    background-color: ${props => {
+      if (props.disabled) return;
+      switch (props.variant) {
+        case 'primary': return '#E64D00'; // Darker orange
+        case 'secondary': return REPZ_THEME.colors.gray900;
+        case 'outline': return 'rgba(255, 85, 0, 0.1)';
+        case 'text': return 'rgba(255, 85, 0, 0.1)';
+        default: return '#E64D00';
+      }
+    }};
+  }
+  
+  &:active {
+    transform: ${props => props.disabled ? 'none' : 'translateY(1px)'};
+  }
+  
+  > * + * {
+    margin-left: 8px;
+  }
+;
+
+export const RepzButton: React.FC<ButtonProps> = (props) => {
+  return (
+    <StyledButton {...props}>
+      {props.loading && <span className="repz-button__loader" />}
+      {!props.loading && props.leftIcon && <span className="repz-button__left-icon">{props.leftIcon}</span>}
+      {props.children}
+      {!props.loading && props.rightIcon && <span className="repz-button__right-icon">{props.rightIcon}</span>}
+    </StyledButton>
+  );
+};
+
+// PROGRESS INDICATORS
+interface ProgressBarProps {
+  value: number; // 0-100
+  variant?: 'default' | 'success' | 'warning' | 'error';
+  showValue?: boolean;
+  height?: string;
+  animated?: boolean;
+}
+
+const StyledProgressBar = styled.div<ProgressBarProps>
+  width: 100%;
+  background-color: ${REPZ_THEME.colors.gray200};
+  border-radius: ${REPZ_THEME.borderRadius.pill};
+  height: ${props => props.height || '8px'};
+  overflow: hidden;
+  position: relative;
+  
+  .repz-progress-bar__fill {
+    height: 100%;
+    width: ${props => ${props.value}%};
+    background-color: ${props => {
+      switch (props.variant) {
+        case 'success': return REPZ_THEME.colors.success;
+        case 'warning': return REPZ_THEME.colors.warning;
+        case 'error': return REPZ_THEME.colors.error;
+        default: return REPZ_THEME.colors.primary;
+      }
+    }};
+    transition: width 0.3s ease;
+    border-radius: ${REPZ_THEME.borderRadius.pill};
+    
+    ${props => props.animated && 
+      position: relative;
+      overflow: hidden;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        animation: shimmer 1.5s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+    }
+  }
+  
+  .repz-progress-bar__value {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    font-weight: ${REPZ_THEME.fontWeights.bold};
+    color: ${REPZ_THEME.colors.background};
+  }
+;
+
+export const RepzProgressBar: React.FC<ProgressBarProps> = (props) => {
+  return (
+    <StyledProgressBar {...props}>
+      <div className="repz-progress-bar__fill">
+        {props.showValue && <span className="repz-progress-bar__value">{props.value}%</span>}
+      </div>
+    </StyledProgressBar>
+  );
+};
+
+// ACTIVITY METER (based on logo bars)
+interface ActivityMeterProps {
+  values: number[]; // Array of values (0-100) for each bar
+  color?: string;
+  barWidth?: string;
+  barGap?: string;
+  height?: string;
+  animated?: boolean;
+}
+
+const StyledActivityMeter = styled.div<Omit<ActivityMeterProps, 'values'>>
+  display: flex;
+  align-items: flex-end;
+  height: ${props => props.height || '40px'};
+  gap: ${props => props.barGap || '4px'};
+  
+  .repz-activity-meter__bar {
+    width: ${props => props.barWidth || '8px'};
+    background-color: ${props => props.color || REPZ_THEME.colors.primary};
+    border-radius: ${REPZ_THEME.borderRadius.sm};
+    transition: height 0.3s ease;
+    
+    ${props => props.animated && 
+      animation: pulse 2s infinite;
+      
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+  }
+;
+
+export const RepzActivityMeter: React.FC<ActivityMeterProps> = ({ values, ...props }) => {
+  return (
+    <StyledActivityMeter {...props}>
+      {values.map((value, index) => (
+        <div 
+          key={index}
+          className="repz-activity-meter__bar"
+          style={{ height: ${value}% }}
+        />
+      ))}
+    </StyledActivityMeter>
+  );
+};
+
+// CARD COMPONENTS
+interface CardProps {
+  variant?: 'default' | 'elevated' | 'outlined';
+  padding?: string;
+  children: React.ReactNode;
+}
+
+const StyledCard = styled.div<CardProps>
+  background-color: ${REPZ_THEME.colors.background};
+  border-radius: ${REPZ_THEME.borderRadius.md};
+  padding: ${props => props.padding || REPZ_THEME.spacing.lg};
+  
+  ${props => {
+    switch (props.variant) {
+      case 'elevated':
+        return box-shadow: ${REPZ_THEME.shadows.md};;
+      case 'outlined':
+        return border: 1px solid ${REPZ_THEME.colors.gray300};;
+      default:
+        return '';
+    }
+  }}
+;
+
+export const RepzCard: React.FC<CardProps> = (props) => {
+  return (
+    <StyledCard {...props}>
+      {props.children}
+    </StyledCard>
+  );
+};
+
+// TYPOGRAPHY COMPONENTS
+interface TypographyProps {
+  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2' | 'caption' | 'button';
+  color?: string;
+  weight?: 'regular' | 'medium' | 'semiBold' | 'bold';
+  align?: 'left' | 'center' | 'right';
+  transform?: 'uppercase' | 'lowercase' | 'capitalize';
+  children: React.ReactNode;
+}
+
+const StyledTypography = styled.div<TypographyProps>
+  font-family: ${REPZ_THEME.fonts.primary};
+  color: ${props => props.color || REPZ_THEME.colors.secondary};
+  text-align: ${props => props.align || 'left'};
+  text-transform: ${props => props.transform || 'none'};
+  margin: 0;
+  
+  ${props => {
+    const fontWeight = REPZ_THEME.fontWeights[props.weight || 'regular'];
+    
+    switch (props.variant) {
+      case 'h1':
+        return 
+          font-size: 32px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.bold};
+          line-height: 1.2;
+        ;
+      case 'h2':
+        return 
+          font-size: 28px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.bold};
+          line-height: 1.2;
+        ;
+      case 'h3':
+        return 
+          font-size: 24px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.bold};
+          line-height: 1.3;
+        ;
+      case 'h4':
+        return 
+          font-size: 20px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.semiBold};
+          line-height: 1.4;
+        ;
+      case 'h5':
+        return 
+          font-size: 18px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.semiBold};
+          line-height: 1.4;
+        ;
+      case 'h6':
+        return 
+          font-size: 16px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.semiBold};
+          line-height: 1.4;
+        ;
+      case 'body1':
+        return 
+          font-size: 16px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.regular};
+          line-height: 1.5;
+        ;
+      case 'body2':
+        return 
+          font-size: 14px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.regular};
+          line-height: 1.5;
+        ;
+      case 'caption':
+        return 
+          font-size: 12px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.regular};
+          line-height: 1.5;
+        ;
+      case 'button':
+        return 
+          font-size: 16px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.medium};
+          line-height: 1.4;
+        ;
+      default:
+        return 
+          font-size: 16px;
+          font-weight: ${fontWeight || REPZ_THEME.fontWeights.regular};
+          line-height: 1.5;
+        ;
+    }
+  }}
+;
+
+export const RepzTypography: React.FC<TypographyProps> = ({ variant, ...props }) => {
+  const Component = (() => {
+    switch (variant) {
+      case 'h1': return StyledTypography.withComponent('h1');
+      case 'h2': return StyledTypography.withComponent('h2');
+      case 'h3': return StyledTypography.withComponent('h3');
+      case 'h4': return StyledTypography.withComponent('h4');
+      case 'h5': return StyledTypography.withComponent('h5');
+      case 'h6': return StyledTypography.withComponent('h6');
+      case 'body1': return StyledTypography.withComponent('p');
+      case 'body2': return StyledTypography.withComponent('p');
+      case 'caption': return StyledTypography.withComponent('span');
+      case 'button': return StyledTypography.withComponent('span');
+      default: return StyledTypography.withComponent('p');
+    }
+  })();
+  
+  return <Component variant={variant} {...props} />;
+};"
+
+Repz Migration Script: "#!/usr/bin/env node
+/**
+ * REPZ Brand Migration Script
+ * 
+ * This script automates the process of migrating from CoachTrackPro/coaching-app 
+ * to the new REPZ branding across all repositories.
+ * 
+ * Usage: 
+ * 1. Place this script at the root of your project
+ * 2. Run: node migrate-to-repz.js
+ */
+
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+// Configuration
+const OLD_BRAND_NAMES = [
+  'CoachTrackPro', 
+  'CoachTrack', 
+  'coaching-app',
+  'trackPro',
+  'CTApp',
+  'CTProgress',
+  'CT'
+];
+
+const NEW_BRAND_NAME = 'REPZ';
+const NEW_BRAND_NAME_LOWERCASE = 'repz';
+
+// Pattern replacements (camelCase, PascalCase, kebab-case, etc.)
+const REPLACEMENTS = [
+  { 
+    pattern: /CoachTrackPro/g, 
+    replacement: 'REPZ' 
+  },
+  { 
+    pattern: /CoachTrack/g, 
+    replacement: 'REPZ' 
+  },
+  { 
+    pattern: /coachTrackPro/g, 
+    replacement: 'repz' 
+  },
+  { 
+    pattern: /coachTrack/g, 
+    replacement: 'repz' 
+  },
+  { 
+    pattern: /coaching-app/g, 
+    replacement: 'repz-app' 
+  },
+  { 
+    pattern: /coaching_app/g, 
+    replacement: 'repz_app' 
+  },
+  { 
+    pattern: /trackPro/g, 
+    replacement: 'repz' 
+  },
+  { 
+    pattern: /CTApp/g, 
+    replacement: 'RepzApp' 
+  },
+  { 
+    pattern: /CTProgress/g, 
+    replacement: 'RepzProgress' 
+  },
+  { 
+    pattern: /CT([A-Z][a-z]+)/g, 
+    replacement: 'Repz$1' 
+  }
+];
+
+// File extensions to process
+const FILE_EXTENSIONS = [
+  '.js', '.jsx', '.ts', '.tsx', '.css', '.scss', 
+  '.html', '.md', '.json', '.yaml', '.yml'
+];
+
+// Directories to exclude
+const EXCLUDE_DIRS = [
+  'node_modules', 
+  '.git', 
+  'build', 
+  'dist', 
+  'coverage'
+];
+
+// Function to check if a file should be processed
+function shouldProcessFile(filePath) {
+  const ext = path.extname(filePath);
+  return FILE_EXTENSIONS.includes(ext);
+}
+
+// Function to check if a directory should be excluded
+function shouldExcludeDir(dirPath) {
+  const basename = path.basename(dirPath);
+  return EXCLUDE_DIRS.includes(basename);
+}
+
+// Function to update file content
+function updateFileContent(filePath) {
+  try {
+    let content = fs.readFileSync(filePath, 'utf8');
+    let originalContent = content;
+    
+    // Apply all replacements
+    REPLACEMENTS.forEach(({ pattern, replacement }) => {
+      content = content.replace(pattern, replacement);
+    });
+    
+    // Only write if content has changed
+    if (content !== originalContent) {
+      fs.writeFileSync(filePath, content, 'utf8');
+      console.log(Updated: ${filePath});
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error(Error processing file ${filePath}: ${error.message});
+    return false;
+  }
+}
+
+// Function to recursively process directories
+function processDirectory(dirPath, stats = { processed: 0, updated: 0 }) {
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+  
+  for (const entry of entries) {
+    const fullPath = path.join(dirPath, entry.name);
+    
+    if (entry.isDirectory()) {
+      if (!shouldExcludeDir(fullPath)) {
+        processDirectory(fullPath, stats);
+      }
+    } else if (entry.isFile() && shouldProcessFile(fullPath)) {
+      stats.processed++;
+      if (updateFileContent(fullPath)) {
+        stats.updated++;
+      }
+    }
+  }
+  
+  return stats;
+}
+
+// Function to update package.json
+function updatePackageJson() {
+  const packagePath = path.join(process.cwd(), 'package.json');
+  
+  if (fs.existsSync(packagePath)) {
+    try {
+      const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+      
+      // Update name
+      if (packageJson.name) {
+        OLD_BRAND_NAMES.forEach(oldName => {
+          if (packageJson.name.includes(oldName.toLowerCase())) {
+            packageJson.name = packageJson.name.replace(
+              oldName.toLowerCase(), 
+              NEW_BRAND_NAME_LOWERCASE
+            );
+          }
+        });
+      }
+      
+      // Update description
+      if (packageJson.description) {
+        OLD_BRAND_NAMES.forEach(oldName => {
+          if (packageJson.description.includes(oldName)) {
+            packageJson.description = packageJson.description.replace(
+              oldName, 
+              NEW_BRAND_NAME
+            );
+          }
+        });
+      }
+      
+      // Write updated package.json
+      fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2), 'utf8');
+      console.log('Updated package.json');
+      
+    } catch (error) {
+      console.error(Error updating package.json: ${error.message});
+    }
+  }
+}
+
+// Function to update Git repository information
+function updateGitInfo() {
+  try {
+    // Check if we're in a git repository
+    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    
+    // Create a new branch for the migration
+    const branchName = 'migration/repz-branding';
+    execSync(git checkout -b ${branchName}, { stdio: 'inherit' });
+    console.log(Created new branch: ${branchName});
+    
+  } catch (error) {
+    console.log('Not a git repository or git command failed. Skipping git operations.');
+  }
+}
+
+// Main function to run the migration
+function migrateToRepz() {
+  console.log('Starting REPZ brand migration...');
+  
+  // Update package.json first
+  updatePackageJson();
+  
+  // Process all files
+  const startTime = Date.now();
+  const stats = processDirectory(process.cwd());
+  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+  
+  // Update Git info
+  updateGitInfo();
+  
+  // Print summary
+  console.log('\nMigration Summary:');
+  console.log('------------------');
+  console.log(Files processed: ${stats.processed});
+  console.log(Files updated: ${stats.updated});
+  console.log(Time taken: ${duration} seconds);
+  console.log('\nNext steps:');
+  console.log('1. Review the changes manually');
+  console.log('2. Update any database references');
+  console.log('3. Update API endpoint paths');
+  console.log('4. Run tests to ensure functionality is preserved');
+  console.log('5. Commit and push changes');
+}
+
+// Run the migration
+migrateToRepz();"
+
+REPZ Repository Consolidation Plan: "# REPZ Repository Consolidation Plan
+
+## Current State Analysis
+
+Based on the GitHub repositories provided, we have identified several related codebases that need consolidation under the REPZ brand:
+
+| Repository | Description | Tech Stack | Status |
+|------------|-------------|------------|--------|
+| [CoachTrackPro-new](https://github.com/alaweimm/CoachTrackPro-new) | Newer version of the core fitness app | TypeScript, React | Active |
+| [fitness-app-notes](https://github.com/alaweimm/fitness-app-notes) | Documentation and planning notes | Markdown | Reference |
+| [coaching-app-bolt](https://github.com/alaweimm/coaching-app-bolt) | Performance-focused version | TypeScript | Active |
+| [CoachTrackPro](https://github.com/alaweimm/CoachTrackPro) | Original fitness app | TypeScript | Legacy |
+| [fitness-excel](https://github.com/alaweimm/fitness-excel) | Data models and analytics | Excel, CSV | Reference |
+| [coaching-app-claude-new](https://github.com/alaweimm/coaching-app-claude-new) | AI-assisted coaching features | JavaScript | Experimental |
+| [coaching-app-claude](https://github.com/alaweimm/coaching-app-claude) | Original AI coaching integration | JavaScript | Legacy |
+| [coaching-app](https://github.com/alaweimm/coaching-app) | Base coaching application | TypeScript | Legacy |
+
+## Repository Consolidation Strategy
+
+We will consolidate these repositories into three main repositories:
+
+1. **repz-app**: Main application repository (monorepo structure)
+2. **repz-data**: Data models, analysis, and machine learning
+3. **repz-docs**: Documentation, brand guidelines, and design system
+
+## Phase 1: Setup New Repositories
+
+bash
+# Create new repositories
+mkdir -p ~/repz-projects/{repz-app,repz-data,repz-docs}
+
+# Initialize git in each repository
+cd ~/repz-projects/repz-app && git init
+cd ~/repz-projects/repz-data && git init
+cd ~/repz-projects/repz-docs && git init
+
+# Set up monorepo structure in repz-app
+cd ~/repz-projects/repz-app
+mkdir -p apps/{web,mobile,admin} packages/{ui,api,analytics,models} services/{api,auth,data} docs tools
+
+
+## Phase 2: Feature Categorization
+
+Categorize features across repositories:
+
+### Core Application Features
+- User authentication and profiles
+- Workout tracking and planning
+- Exercise library and routines
+- Progress analytics and visualization
+- Social and sharing features
+
+### Data and ML Features
+- Exercise detection and form analysis
+- Predictive models for progression
+- Data transformation and normalization
+- Performance analytics 
+
+### Documentation and Brand
+- Brand identity and design system
+- API documentation
+- User guides and tutorials
+- Developer documentation
+
+## Phase 3: Code Migration Plan
+
+### Step 1: Set Up Base Infrastructure
+
+bash
+# Set up repz-app base structure
+cd ~/repz-projects/repz-app
+
+# Initialize package.json
+npm init -y
+
+# Install core dependencies
+npm install react react-dom next typescript @types/react @types/node
+npm install -D eslint prettier jest
+
+# Set up monorepo with Turborepo or Nx
+npm install -D turbo
+
+# Create base configuration files
+touch tsconfig.json .eslintrc.js .prettierrc
+
+
+### Step 2: Migrate Core Features
+
+For each feature, identify the best implementation across repositories:
+
+bash
+# Example: Migrating authentication
+# First, identify repository with best implementation
+# For example, from coaching-app-bolt
+
+# Copy relevant code with the migration script
+cd ~/repz-projects/repz-app
+node ../migration-scripts/migrate-feature.js --feature=auth --source=coaching-app-bolt
+
+# Review and adapt to new structure
+# Update imports, file paths, and namespaces
+
+
+### Step 3: Migrate UI Components
+
+bash
+# Copy UI components from CoachTrackPro-new
+cp -r ~/projects/CoachTrackPro-new/src/components ~/repz-projects/repz-app/packages/ui/components
+
+# Run the migration script to update branding
+cd ~/repz-projects/repz-app/packages/ui
+node ../../../migration-scripts/migrate-to-repz.js
+
+
+### Step 4: Set Up Shared Data Models
+
+bash
+# Extract data models from various repositories
+# Standardize the models under packages/models
+mkdir -p ~/repz-projects/repz-app/packages/models/src
+touch ~/repz-projects/repz-app/packages/models/package.json
+touch ~/repz-projects/repz-app/packages/models/tsconfig.json
+
+# Copy data models from multiple sources
+cp ~/projects/CoachTrackPro-new/src/types/* ~/repz-projects/repz-app/packages/models/src/
+cp ~/projects/coaching-app/src/models/* ~/repz-projects/repz-app/packages/models/src/
+
+# Standardize naming conventions
+cd ~/repz-projects/repz-app/packages/models
+node ../../../migration-scripts/standardize-models.js
+
+
+## Phase 4: Testing Strategy
+
+bash
+# Set up Jest for testing
+cd ~/repz-projects/repz-app
+npm install -D jest @testing-library/react @testing-library/jest-dom
+
+# Create test configuration
+touch jest.config.js
+
+# Migrate existing tests
+mkdir -p apps/web/__tests__ apps/mobile/__tests__
+
+# Run tests after migration
+npm test
+
+
+## Phase 5: CI/CD Setup
+
+bash
+# Set up GitHub Actions
+mkdir -p .github/workflows
+touch .github/workflows/ci.yml
+touch .github/workflows/deploy.yml
+
+# Configure CI pipeline
+# - Linting
+# - Type checking
+# - Unit tests
+# - Build
+
+# Configure deployment pipeline
+# - Staging
+# - Production
+
+
+## Phase 6: Documentation Migration
+
+bash
+# Set up documentation site (Docusaurus)
+cd ~/repz-projects/repz-docs
+npx @docusaurus/init@latest init . classic
+
+# Create documentation structure
+mkdir -p docs/{api,developer,user,brand}
+
+# Migrate documentation from various repositories
+cp ~/projects/fitness-app-notes/*.md docs/
+cp ~/projects/CoachTrackPro/README.md docs/developer/
+cp ~/projects/coaching-app-claude-new/docs/*.md docs/api/
+
+# Update branding in documentation
+find ./docs -type f -name "*.md" -exec sed -i 's/CoachTrackPro/REPZ/g' {} \;
+find ./docs -type f -name "*.md" -exec sed -i 's/coaching-app/repz-app/g' {} \;
+
+
+## Phase 7: Brand Assets Migration
+
+bash
+# Create brand assets directory
+mkdir -p ~/repz-projects/repz-app/packages/ui/assets
+
+# Copy and update brand assets
+cp ~/projects/CoachTrackPro-new/src/assets/* ~/repz-projects/repz-app/packages/ui/assets/
+
+# Replace old logos with new REPZ logos
+# (Manually or through design tools)
+
+
+## Timeline and Milestones
+
+1. **Week 1-2: Planning and Setup**
+   - Create new repositories
+   - Set up monorepo structure
+   - Establish migration scripts
+
+2. **Week 3-4: Core Features Migration**
+   - Migrate authentication and user profiles
+   - Migrate workout tracking features
+   - Migrate exercise library
+
+3. **Week 5-6: UI and UX Migration**
+   - Implement REPZ design system
+   - Update UI components
+   - Standardize user flows
+
+4. **Week 7-8: Data and Analytics**
+   - Migrate data models
+   - Set up analytics
+   - Implement tracking features
+
+5. **Week 9-10: Testing and Refinement**
+   - Comprehensive testing
+   - Bug fixes
+   - Performance optimization
+
+6. **Week 11-12: Documentation and Launch**
+   - Complete documentation
+   - Final reviews
+   - Public launch
+
+## Post-Migration Tasks
+
+1. Archive old repositories with redirects to new ones
+2. Update any external references or documentation
+3. Migrate open issues to the new repositories
+4. Create a migration guide for existing users
+5. Set up monitoring for the new infrastructure
