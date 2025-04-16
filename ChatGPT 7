@@ -1,0 +1,505 @@
+1. Repz App
+
+# REPZ App Architecture and Functionality
+
+## Overview
+The REPZ App is a modular fitness coaching platform centered around data-driven strength training. It offers client-side features for self-coaching, automated planning, logging, tracking, and analytics across training, cardio, PED/supplements, and health metrics.
+
+## Functional Modules
+
+### 1. Client Dashboard
+- Overview widget with current stats (weight, training split, weekly volume, compliance)
+- Upcoming training days
+- Quick actions: log workout, add cardio, update metrics
+
+### 2. Training Module
+- Training Program Builder: select templates or create splits (push/pull/legs, upper/lower, etc.)
+- Daily Training Log: reps, sets, RIR, rest, perceived difficulty
+- Progression engine: compares last sessions, recommends loads/volume
+- Visualization: tonnage over time, PR milestones, frequency heatmaps
+
+### 3. Cardio Module
+- Daily/Weekly goals (steps, duration, type: LISS, MISS, HIIT)
+- Sync or manual entry
+- Track adherence vs. plan (compliance %)
+- Visual breakdown: cardio time trends, intensity zones
+
+### 4. Nutrition Tracker (basic version for MVP)
+- Daily macros logging or goal entry
+- Links with supplement/PED protocols
+- Future: integrations with MyFitnessPal or similar APIs
+
+### 5. PED & Supplement Protocol
+- Track compounds with fields: name, dose, frequency, route, notes
+- Supports: cycles (blast, cruise, TRT, off), stacked entries, durations
+- Scheduling view: weekly chart of injections/orals
+- Compound library integration with info/dosage ranges
+
+### 6. Health & Wellness Tracking
+- Daily logs: sleep hours, mood, libido, digestion, fatigue
+- Weekly logs: blood pressure, RHR, HRV, weight, biomarkers
+- Visual reports: health marker trends, cycle-related changes
+
+### 7. Body Metrics & Photos
+- Log circumference (waist, arms, legs), body fat %, scale weight
+- Upload and timestamp progress photos (front, side, back)
+- Compare photos across weeks (split view)
+
+### 8. Calendar & Notifications
+- Calendar overview of training, cardio, PEDs, photos, check-ins
+- Notifications for: protocol changes, missed logs, weekly summary
+
+### 9. Weekly Check-ins
+- Auto-summarized weekly stats (weight change, compliance, training volume)
+- Optional reflection prompt (energy, adherence, goals)
+
+## Features Planned for Post-MVP
+- AI-generated suggestions based on user data
+- NLP-powered logs
+- Direct export of weekly summary reports (PDF)
+- Desktop & PWA modes
+
+## Data Flow
+- All modules integrate with the backend (see `repz-data.md`)
+- Stored securely with timestamps, linked by user ID and week
+- Analytics engine pulls from all logs to generate compliance, progress, etc.
+
+## Technologies
+- React + Tailwind CSS
+- Recharts for data visualizations
+- Local state: Zustand/Redux Toolkit
+- Backend: Node.js API (see repz-data)
+- CI/CD via GitHub Actions & Vercel/Netlify (staging + prod)
+
+## Branding
+- Primary theme: bold black, gray, and orange (#FF5500)
+- Typography: modern sans-serif, athletic aesthetic
+- UI elements align with brand language: intensity, progress, data clarity
+
+
+
+
+
+====================
+
+
+2. Repz Data
+
+# REPZ Data Architecture
+
+## Overview
+The REPZ data layer powers all app features including workouts, PED tracking, and health logs. It is structured to scale across modules and integrates seamlessly with the frontend and potential third-party services.
+
+## Backend Technologies
+- **Language:** TypeScript (Node.js)
+- **Framework:** Express.js or Fastify
+- **Database:** PostgreSQL (primary) + Redis (for caching)
+- **ORM:** Prisma
+- **Auth:** JWT + refresh token rotation
+
+## Folder Structure (example)
+```
+repz-data/
+├── src/
+│   ├── modules/
+│   │   ├── auth/
+│   │   ├── workouts/
+│   │   ├── cardio/
+│   │   ├── ped/
+│   │   ├── health/
+│   │   └── users/
+│   ├── utils/
+│   └── middlewares/
+└── prisma/
+```
+
+## Core Modules
+
+### Auth
+- JWT-based login/register
+- Roles: user, admin
+- Middleware for access control
+
+### Users
+- Account settings
+- Onboarding data: goals, current stats, experience level
+
+### Workouts
+- Daily logs: date, exercises, reps, sets, RIR, load, time
+- Training plans: structured programs (split, week, progression)
+- Compliance score per week
+
+### Cardio
+- Logs: type, duration, intensity, steps
+- Weekly goals and fulfillment ratio
+
+### PED & Supplements
+- Logged compounds: dosage, frequency, route, side effects
+- Time-segmented protocols: blast, cruise, off-cycle
+- Linked to weekly calendar for visual protocol review
+
+### Health Logs
+- Daily entries: mood, digestion, sleep, fatigue
+- Weekly: weight, blood pressure, HRV, etc.
+- Trend visualizations on frontend
+
+### Analytics Engine
+- Aggregates: tonnage, compliance, biomarker changes
+- Hooks into front-end dashboard widgets
+- Data transformations for charts
+
+## APIs
+- RESTful or GraphQL endpoints with Swagger/OpenAPI docs
+- Versioned routes: `/v1/workouts`, `/v1/peds`, etc.
+
+## Testing
+- Jest for unit/integration
+- Postman/Newman for API test suites
+
+## Security & Logging
+- Helmet for secure headers
+- Rate limiting
+- Winston/Morgan logs + error tracking (e.g., Sentry)
+
+## DevOps
+- GitHub Actions CI for tests, lint
+- CD to staging/prod with rollback support
+- PostgreSQL migrations via Prisma
+
+## Data Retention
+- Historical logs preserved for 12+ months
+- GDPR support for account deletion and anonymization
+
+## Interoperability
+- Future API support for:
+  - Wearables (e.g., Fitbit, Apple Health)
+  - Meal tracking (MyFitnessPal)
+  - Blood test results (upload or API)
+
+This backend provides a structured, secure, and extensible foundation for the REPZ coaching experience.
+
+
+=============
+
+3. Repz Supplements
+
+# REPZ Supplements & PEDs System
+
+## Overview
+This module organizes the tracking, visualization, and planning of supplements and performance-enhancing drugs (PEDs) for fitness optimization.
+
+## Key Functional Areas
+
+### Compound Library
+- **Classes:** Fat loss, GH secretagogues, anabolics, health/longevity, recovery
+- **Entries:** Name, category, delivery (oral/injectable), typical dose range, min/max IU or mg, duration, notes
+- **Data fields:**
+  - Recommended dosage (typical, minimum)
+  - Route (IM, SC, oral)
+  - Unit (mg, IU, mL)
+  - Mechanism of action
+  - Risks/benefits matrix
+  - Cycle length guidance
+
+### User Protocol Tracking
+- Stack builder: add compounds, group into stacks (e.g., cutting phase)
+- Cycle periodization: define blocks (blast, cruise, off, TRT)
+- Visual timeline: calendar of dosages, injections, orals
+- Reminders: optional app notifications (with timing)
+
+### Health Overlay
+- Integrates health tracking (e.g., BP, HRV) to flag adverse events
+- Allows noting side effects or subjective experiences (e.g., insomnia, aggression, acne)
+
+### Smart Features
+- Suggest “health counterbalance stack” (e.g., NAC, TUDCA, fish oil for liver/cardiovascular)
+- Warnings when stacking compounds with overlapping toxicities (e.g., methylated orals)
+- Auto-detect cycle transitions (start/end) based on protocol changes
+
+### Example Compound Table Format
+| Compound      | Class           | Route | Typical Dose | Max Dose | Cycle Length | Notes                       |
+|---------------|------------------|-------|---------------|----------|---------------|----------------------------|
+| BPC-157       | Healing Peptide | SC    | 200 mcg/day   | 500 mcg  | 2–4 weeks     | Great for joint recovery   |
+| IGF-1 LR3     | Anabolic Peptide| IM/SC | 20–40 mcg/day | 80 mcg   | 4–6 weeks     | Strong growth factor       |
+| Retatrutide   | Fat Loss        | SC    | 0.5–2 mg/wk   | 4 mg     | 4–12+ weeks   | GLP/GIP triple agonist     |
+
+## Backend Representation
+```ts
+interface PEDLog {
+  compoundId: string;
+  userId: string;
+  date: string;
+  dose: number;
+  route: 'oral' | 'SC' | 'IM';
+  notes?: string;
+  healthEffects?: string[];
+}
+```
+
+## Future Features
+- PDF export of cycles for coaching or medical review
+- User-generated compound reviews or risk ratings
+- Integration with REPZ dashboard and weekly check-ins
+
+The PED/supplement system makes REPZ uniquely suited for advanced trainees and competitors who need precision logging, risk mitigation, and full-cycle visibility.
+
+
+
+================
+
+
+4. Rep Coaching 
+
+# REPZ Coaching Logic
+
+## Coaching Philosophy
+REPZ empowers users to self-coach or receive hybrid coaching using science-backed periodization, metrics-based adaptation, and progressive tracking.
+
+## Coaching Modes
+- **Self-Coaching:** Autonomous mode, powered by built-in progress logic
+- **Coach-Client:** Shared access, coach creates and reviews plans, comments on check-ins
+- **Hybrid:** User logs everything, external coach reviews analytics
+
+## Weekly Cycle
+- Day 0: Check-in (summary of logs, adherence, progress)
+- Days 1–6: Execute training, PEDs, nutrition, recovery
+- Day 7: Reflect, adjust plan (manually or via auto-suggestion)
+
+## Adaptive Intelligence
+- Flags plateaus: no PR in 3 weeks → prompts deload or tweak
+- Adjusts cardio or PEDs based on weight trends or recovery markers
+- Detects underlogging or missing data (e.g., no sleep logs for 3+ days)
+
+## Compliance Engine
+- Calculates:
+  - Training compliance %
+  - Cardio compliance %
+  - PED/supplement protocol adherence
+  - Sleep tracking adherence
+- Displays as badges or weekly summary
+
+## Feedback Loop
+- Every check-in includes:
+  - Stats summary
+  - Mood, energy, soreness notes
+  - Graphs of weight trend, calories/macros, step count
+- Coaches (or AI) respond with:
+  - Macro or PED adjustment suggestions
+  - Training split change recommendations
+
+## Periodization Options
+- Linear
+- Undulating
+- Block (strength → hypertrophy → pump)
+- Auto-regulated (RIR-based)
+
+## Goal Targeting
+- Focused goal modes:
+  - Fat loss (integrated cardio and PED emphasis)
+  - Muscle gain (volume-centric programming, PED emphasis)
+  - Recomp (dynamic adjustment weekly)
+  - Contest prep (visual logs, dry-out tracking)
+
+## Coach Inbox (Planned)
+- View all active clients’ summaries
+- Respond to flagged issues (injury, weight stall, PED interaction)
+- Quick reply system (emoji + canned message templates)
+
+## Export/Reports
+- Coach can export PDF of cycle history
+- Includes: protocols, progress photos, adherence, biometrics
+
+This module ensures REPZ can be used by serious athletes, bodybuilders, and recreational users aiming for measurable progress and smart adjustments.
+
+
+==================
+
+
+5. Repz Docs
+
+# REPZ Documentation Hub
+
+## Purpose
+The `repz-docs` repository houses internal and external documentation:
+- Developer onboarding
+- API references
+- Brand assets
+- Feature guides for users
+
+## Structure
+```
+repz-docs/
+├── public/
+│   └── assets/ (logos, UI screenshots)
+├── docs/
+│   ├── user-guide/
+│   ├── coach-guide/
+│   ├── api-reference/
+│   └── faq.md
+├── README.md
+└── config/
+    └── sidebar.js (or similar)
+```
+
+## Content Types
+
+### 1. User Guide
+- Getting started (account creation, onboarding questionnaire)
+- Logging workouts, cardio, PEDs, health metrics
+- Reading dashboard charts
+- Weekly check-ins
+
+### 2. Coach Guide
+- How to manage clients
+- Review logs and provide feedback
+- Use the PDF export feature
+
+### 3. API Docs
+- REST endpoint reference for external integrations
+- Auth, workouts, cardio, PEDs
+- JSON schema examples
+
+### 4. FAQ
+- Common issues and their solutions
+- What devices are supported?
+- How secure is my PED data?
+
+## Branding Integration
+- Same theme as `repz-app` (colors, typography)
+- Components imported from design system (or CSS variables mirrored)
+- Optional dark mode toggle
+
+## Tech Stack
+- Static docs site: Docusaurus or Next.js static mode
+- Markdown-based
+- Versioned documentation support
+
+## Deployment
+- Hosted via GitHub Pages or Vercel
+- Auto-published from `main` branch
+- CI pipeline: lint + link check
+
+## Roadmap
+- Embed video tutorials
+- Add search with Algolia
+- Include full migration log (history of CoachTrackPro → REPZ transition)
+
+`repz-docs` ensures transparency, consistency, and self-service support for developers, users, and partners.
+
+
+===============
+
+6. Repz testing
+
+# REPZ Testing and CI/CD Strategy
+
+## Goals
+- Ensure platform stability during and after migration
+- Catch regressions early
+- Maintain high confidence in releases
+
+## Testing Layers
+
+### 1. Unit Tests
+- **Framework:** Jest
+- **Coverage:** logic, utilities, reducers, services
+- **Strategy:** colocated tests (`__tests__` or `.test.ts[x]`)
+
+### 2. Integration Tests
+- Back-end: APIs (with Supertest)
+- Front-end: Store logic, component rendering
+- Test db or mocks
+
+### 3. End-to-End (E2E)
+- **Framework:** Playwright (or Cypress if already used)
+- **Scenarios:** user signup → log training → log PED → check compliance
+- **Run:** nightly full suite, smoke on every PR
+
+### 4. Accessibility & Visual
+- Contrast and structure checks (Axe-core, Lighthouse)
+- Snapshot testing via Storybook or Jest snapshots
+
+## CI/CD Tools
+- GitHub Actions
+- Matrix builds (Node versions, platforms)
+- Nx or Turborepo cache integration
+
+## PR Requirements
+- Lint + Type check
+- Unit test pass
+- Optional smoke E2E
+- Require approvals (at least 1 dev)
+
+## CD Flow
+- On merge to `main`:
+  - Run full test suite
+  - Build frontend/backend
+  - Deploy to staging
+  - Run E2E against staging
+- Manual promotion to prod with smoke verification
+
+## Reporting
+- Slack CI bot for failures/success
+- GitHub status checks per commit
+- Coverage reports
+
+## Future Additions
+- Load tests for API (k6)
+- Full regression benchmark on release week
+
+This strategy ensures REPZ's stability, especially during refactors and migration, and builds confidence for frequent deploys.
+
+
+=================
+
+
+7. Repz Brand
+
+# REPZ Brand & Design System
+
+## Identity
+- **Name:** REPZ – Intelligent Physique Coaching
+- **Colors:**
+  - Primary Orange: `#FF5500`
+  - Accent Black, Soft Gray
+- **Logo:**
+  - Main: REPZ wordmark + barbell activity icon
+  - Mobile: barbell icon
+  - App Icon: isolated logo on dark bg
+
+## Voice
+- Bold, scientific, no-fluff
+- Competitive edge meets precision
+- Clear and motivational language in UI
+
+## Typography
+- Primary: Sans-serif, modern athletic (e.g., Inter or SF Pro)
+- Hierarchy:
+  - h1: 2.25rem+, bold
+  - h2: 1.75rem, semi-bold
+  - body: 1rem, light
+
+## Components
+- Consistent border radius (`2xl`), shadows
+- Tailwind CSS tokens
+- Dark mode default with light toggle
+
+## Layout Guidelines
+- Cards with padding `p-4`
+- Grid-based layout (2/3 split or 1/4 + 3/4 for dashboards)
+- Icons from lucide-react
+
+## Asset Usage
+- No embedded text in images
+- High-resolution files (SVG, PNG)
+- Branded social headers and app store banners
+
+## Documentation & Sharing
+- Style guide available in `repz-docs`
+- Figma or equivalent source file maintained
+
+## Roadmap
+- Add animations (Framer Motion)
+- Expand to merch kits and business cards
+
+The REPZ brand visually reflects intensity, performance, and data precision. All components reinforce our identity as a modern, high-performance fitness platform.
