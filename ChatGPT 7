@@ -1,3 +1,161 @@
+a comprehensive program flow tree diagram showing:
+
+Structure and interconnections of the .md files
+
+How they map to actual functionality
+
+The relationships between components (e.g. front-end, back-end, shared data, supplements, protocols)
+
+Where things like testing, UI, and databases plug in
+
+🌲 REPZ Project Architecture Tree (Functional View Based on .md Files)
+plaintext
+Copy
+Edit
+REPZ Platform
+│
+├── repz-app.md                # Main front-end logic (React + Tailwind + Recharts)
+│   ├── UI Components
+│   │   ├── Dashboard (Weekly Summary, Check-ins)
+│   │   ├── Training Log (Workouts, Volume, PRs)
+│   │   ├── Nutrition Tracking (Macros, Meals)
+│   │   ├── Supplement Scheduler
+│   │   └── Health Logs (Mood, Energy, Sleep)
+│   ├── Pages
+│   │   ├── Client Dashboard
+│   │   ├── Coach Panel
+│   │   └── Check-in Forms
+│   ├── Integrations
+│   │   └── API calls to repz-data (GET/POST: logs, macros, PEDs)
+│   └── Feature Flags (toggle between themes / enable PED views)
+
+├── repz-data.md              # Back-end (Node.js/Express or Supabase/PostgREST)
+│   ├── Core Data Models
+│   │   ├── User, Workout, Food, Supplement, PED, Checkin
+│   │   └── Health Logs, Training Plans
+│   ├── APIs
+│   │   ├── `/api/users` CRUD
+│   │   ├── `/api/workouts` CRUD
+│   │   ├── `/api/supplements` & `/api/peds` – smart protocol endpoints
+│   │   └── Auth, analytics, compliance
+│   ├── Integrations
+│   │   ├── External health devices (Planned)
+│   │   └── Stripe / payment systems
+│   └── Database
+│       └── PostgreSQL (tables match core models above)
+
+├── repz-supplements.md       # Supplement data, effects, dosages, interactions
+│   ├── Tables for each class:
+│   │   ├── Health (e.g., NAC, Omega-3)
+│   │   ├── Fat Loss (e.g., Lipo-C, AOD-9604)
+│   │   └── Recovery & Sleep (e.g., BPC-157, Melatonin)
+│   ├── Cycle planning
+│   ├── Safety grading
+│   └── Integration logic (shown in front-end scheduling UI)
+
+├── repz-peds.md              # PED protocols and stacks
+│   ├── Injectable Compounds
+│   ├── Oral Compounds
+│   ├── Peptides (e.g., GH Frag, IGF-1 LR3)
+│   ├── Cycle Planning Templates
+│   └── Post-Cycle Therapy (PCT) logic
+│
+├── repz-coach.md             # Coach workflow logic
+│   ├── Create/Edit Client Programs
+│   ├── Review Check-ins, Metrics, and Adjust
+│   ├── Create Protocol Templates
+│   └── Feedback Loop & Chat AI assistant (Planned integration)
+│
+├── repz-testing.md           # Full test strategy
+│   ├── Jest unit tests (for logic and UI)
+│   ├── Playwright E2E tests
+│   ├── CI/CD with GitHub Actions
+│   ├── Migration test checklist
+│   └── Regression + smoke test strategy
+│
+├── repz-architecture.md      # Monorepo setup, CI/CD, dev tools
+│   ├── Nx/Turborepo structure
+│   ├── Directory Layout
+│   │   ├── apps/
+│   │   │   └── repz-app, repz-data
+│   │   └── libs/
+│   │       └── ui, utils, shared-models
+│   ├── Branch protection rules
+│   └── Deployment pipeline (staging + prod)
+
+├── repz-communications.md    # Internal/external communication plan
+│   ├── Internal roles & responsibilities
+│   ├── GitHub Projects workflow
+│   ├── Slack + Notion usage
+│   ├── Stakeholder update templates
+│   └── Launch communication timeline
+
+├── repz-migration.md         # Rebrand + merge strategy
+│   ├── Repo unification steps
+│   ├── Refactoring approach (codemods, renaming)
+│   ├── History-preserving (via `git subtree`)
+│   ├── Timeline (12 weeks, 4 phases)
+│   └── Legacy deprecation & redirects
+
+└── repz-summary.md           # External summary (Create.xyz and partner-facing)
+    ├── What REPZ is (data-driven strength training)
+    ├── Project scope
+    ├── Expected outcome (consolidation, UX refresh, faster dev)
+    └── Benefits to users and partners
+🧠 How It All Connects (Logic Flow Summary)
+Frontend (repz-app) renders all user experiences based on user role (coach/client) and pulls data from:
+
+repz-data (real-time API endpoints)
+
+Local UI state for planning workouts/supplement protocols
+
+Backend (repz-data) handles:
+
+Authentication
+
+Workout + nutrition logs
+
+Supplement & PED stack logic
+
+Custom coach programs
+
+API consumed by repz-app
+
+repz-supplements.md and repz-peds.md provide:
+
+Structured data tables → used to build protocols in the UI
+
+Guidelines for dosage and cycling → shown in client plans
+
+Safety grades → shown as warnings/tips in app
+
+repz-testing.md and repz-architecture.md ensure:
+
+Automated CI/CD pipelines
+
+Consistent tests during merge/migration
+
+Smooth transitions using feature flags
+
+repz-communications.md and repz-migration.md document:
+
+Who does what
+
+How repos are merged
+
+Timeline and tools used to track work
+
+
+
+==================================
+==================================
+==================================
+==================================
+==================================
+==================================
+==================================
+==================================
+
 1. Repz App
 
 # REPZ App Architecture and Functionality
